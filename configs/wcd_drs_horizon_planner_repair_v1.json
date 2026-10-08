@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "kind": "wcd-drs-horizon-planner-repair-audit",
+  "registered_at_utc": "2026-08-27T21:49:22Z",
+  "status": "registered-development-audit",
+  "research_question": "Does compiling the complete deterministic repair surface before native BPE tokenization eliminate every observed constructive-planner false negative on the frozen 128-row W path population without changing the state transition or trusted verifier?",
+  "registration_boundary": "The two failing identities, all three failure events, and targeted prototypes on those states were known before registration. The production implementation and synthetic boundary-merge unit test were also written. The full 128-row post-change replay had not been run. This is a development repair audit, not a new held-out evaluation.",
+  "source": {
+    "pre_fix_audit_manifest": {
+      "path": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-path-certificate-audit-v1.manifest.json",
+      "sha256": "d2cfb5d37efab4236c0897388694c2973add18cfac414c2ff0348b708a81c11c"
+    },
+    "pre_fix_audit_contract": {
+      "path": "configs/wcd_drs_horizon_test128_false_negative_audit_v1.json",
+      "sha256": "2268e955108b788814cb5ee2fa69bb182e102c8de40bed584df141a404924b16"
+    },
+    "pre_fix_audit_report": {
+      "path": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-path-certificate-audit-v1.json",
+      "sha256": "28a2abd66730d1d97a6a2bd052942f757b5b907f31e3f51d1bdd732d0ae12930"
+    },
+    "records": 128,
+    "max_new_tokens": 48,
+    "known_false_negative_rows": [
+      "data/en/test/standard.sbn:76",
+      "data/en/test/standard.sbn:96"
+    ],
+    "known_false_negative_events": 3
+  },
+  "repair": {
+    "implementation": "src/automata_drs/subword.py",
+    "implementation_sha256_at_registration": "fa57a6516378f2b48a4d0fe1f04c6529e447e80079fd4cd71742e493df826d76",
+    "unit_test": "tests/test_subword.py",
+    "unit_test_sha256_at_registration": "07132e3d36fa6b165e47fe93f81a79c350dd079a5ccd04a389fc08cc6e9f6622",
+    "change": "Roll out the same deterministic SBN repair policy as one residual surface, encode that complete surface once under the selected native tokenizer, append EOS, and replay every resulting native token through the unchanged deterministic verifier. Retain the previous fragment-by-fragment planner only as a fallback.",
+    "trusted_core_changed": false,
+    "state_transition_changed": false,
+    "release_policy_changed": false,
+    "new_semantic_rules_added": false
+  },
+  "gate": {
+    "all_128_W_rows_auditable": true,
+    "all_128_source_paths_replay_accepting": true,
+    "planner_accepts_entire_path_rows": 128,
+    "constructive_planner_false_negative_rows": 0,
+    "constructive_planner_false_negative_events": 0,
+    "other_rejection_events": 0,
+    "both_known_failure_rows_repaired": true
+  },
+  "audit": {
+    "output": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-path-certificate-repair-v1.json",
+    "population": "all-128-W-rows-in-source-order",
+    "performance_conditioned_selection": false
+  },
+  "resource_contract": {
+    "model_weights_loaded": false,
+    "gpu_used": false,
+    "cpu_math_threads": 1,
+    "maximum_output_bytes": 131072
+  },
+  "claim_boundary": "Passing this development audit shows that the repaired proposer can certify every previously generated W path in this frozen population. It does not show fresh-decoding quality or generalization; those claims require a separately registered new held-out generation run."
+}

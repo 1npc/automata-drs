@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "kind": "qwen-drs-conditioned-intervention-correction-v2",
+  "registered_at_utc": "2026-08-26T20:25:00Z",
+  "registration_boundary": "Created after the development v1 conditioned matrix failed its immutable integrity gate and before any beam, held-out constrained, tax constrained, or AMR generation began.",
+  "trigger": {
+    "failed_gate": "runs/lora/qwen35-4b-base-r16-seed42/dev-u-invalid-intervention-gate.json",
+    "required_failed_checks": [
+      "selected_u_surface_equivalence",
+      "all_masked_rows"
+    ],
+    "required_passing_checks": [
+      "frozen_selection_plan",
+      "conditioned_matrix",
+      "greedy_decode",
+      "constraint_statistics",
+      "bounded_outputs",
+      "unbounded_acceptance_when_finished",
+      "finite_unmasked_logprob",
+      "finite_nonnegative_timings",
+      "generation_manifest",
+      "official_score_matrix",
+      "conditioned_summary",
+      "paired_statistics"
+    ],
+    "diagnosis": {
+      "u_control": "Regenerating selected U rows under the batch-1 method process need not reproduce the frozen batch baseline surface, so it is not a valid failure-conditioned control.",
+      "prefix_liveness": "A bare backward Proposition connector was lexically live but had no dynamically viable graph target, producing a genuine all-masked suffix under B/W.",
+      "task_metric_used": false
+    }
+  },
+  "splits": [
+    "dev",
+    "test",
+    "tax"
+  ],
+  "population": {
+    "selection_source": "the existing split-specific frozen U baseline and intervention selection plan",
+    "selection_changed": false,
+    "conditioned_on": "raw U structural or Referee invalidity",
+    "population_validity_estimate_allowed": false
+  },
+  "matrix": {
+    "version_suffix": "-v2",
+    "configurations": [
+      "U",
+      "B",
+      "W",
+      "BF",
+      "WF"
+    ],
+    "u_source": "cell-preserving copy from the exact frozen baseline used by the selection plan",
+    "generated_configurations": [
+      "B",
+      "W",
+      "BF",
+      "WF"
+    ],
+    "strategy": "greedy",
+    "max_new_tokens": 256,
+    "schedule": "rotate within the four fresh constrained configurations",
+    "derived_schedule": "cell-preserving-derived-v2",
+    "score_model_logprob": true,
+    "performance_threshold_used": false
+  },
+  "immutability": {
+    "preserve_failed_v1_artifacts": true,
+    "refuse_output_overwrite": true,
+    "bind_source_and_manifest_hashes": true,
+    "recompute_official_scores_and_paired_statistics_for_v2": true
+  },
+  "claim_boundary": "This is an execution-integrity correction, not a result-selected rerun. The failed v1 matrix remains reportable negative evidence; v2 is canonical only if its independent gate passes every non-performance check."
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "kind": "wcd-drs-horizon-surface-v2-posthoc-paired-analysis",
+  "registered_at_utc": "2026-08-27T22:42:00Z",
+  "registration_boundary": "Registered after the complete surface-v2 generation, Smatch scores, and release gate were known. This sidecar freezes descriptive paired inference over all 128 fixed source-order rows; it is not a preregistered confirmatory analysis.",
+  "population": {
+    "split": "test",
+    "start": 128,
+    "limit": 128,
+    "selection": "fixed-128-source-order-window",
+    "performance_conditioned": false
+  },
+  "frozen_inputs": {
+    "generation_contract": "configs/wcd_drs_horizon_test128_surface_v2.json",
+    "predictions": "runs/lora/qwen35-4b-base-r16-seed42/test128-offset128-w-wf-wwcd-h48-surface-v2.jsonl",
+    "scores": "runs/lora/qwen35-4b-base-r16-seed42/test128-offset128-w-wf-wwcd-h48-surface-v2.smatch.jsonl",
+    "release_gate": "runs/lora/qwen35-4b-base-r16-seed42/test128-offset128-w-wf-wwcd-h48-surface-v2-gate.json"
+  },
+  "method_experiment": {
+    "paired_statistics": {
+      "registration_timing": "post-hoc-descriptive",
+      "paired_unit": "example",
+      "baseline_configuration": "W",
+      "bootstrap": "paired-percentile",
+      "bootstrap_resamples": 20000,
+      "confidence": 0.95,
+      "seed": 20260828,
+      "mcnemar": "two-sided-exact-conditional-binomial",
+      "multiplicity": "Holm within each binary metric across comparisons",
+      "primary_metrics": [
+        "raw_sbn_valid",
+        "wellformed_valid",
+        "sbn_smatch"
+      ],
+      "secondary_metrics": [
+        "sbn_valid",
+        "exact_serialization",
+        "generation_ms",
+        "constraint_ms",
+        "decoder_steps"
+      ]
+    }
+  },
+  "comparisons": [
+    "WF-W",
+    "WWCD-W"
+  ],
+  "claim_boundary": "The report quantifies the already frozen h=48 stress window. It can support paired mechanism and bounded-rescue claims for this fixed window, including regressions and ties. It cannot estimate unrestricted-test semantic gains, turn post-hoc intervals into preregistered evidence, or attribute WF-versus-WWCD quality differences when their predictions are identical."
+}

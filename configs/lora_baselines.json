@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "selection_date": "2026-08-26",
+  "shared_recipe": {
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "target_modules": "all-linear",
+    "target_modules_semantics": "All linear layers of the text-generating backbone. For a multimodal wrapper this excludes the unused vision tower and is recorded as language-linear in the architecture-specific training manifest.",
+    "learning_rate": 0.0001,
+    "warmup_ratio": 0.03,
+    "epochs": 3,
+    "per_device_batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "max_length": 1024,
+    "precision": "bf16",
+    "seed": 42
+  },
+  "host_selection": {
+    "frozen_before_pending_results": "2026-08-26T01:05:00+02:00",
+    "evidence_validation_amended_before_qwen_task_outputs": "2026-08-26T05:20:48+02:00",
+    "evidence_validation_amendment": "Bind exact dev corpus rows, recompute ranking metrics from prediction/score rows, and register the observed LFM legacy manifest schema. No ranking metric, direction, tie breaker, or model was changed.",
+    "training_recipe_validation_amended_before_qwen_task_outputs": "2026-08-26T05:33:08+02:00",
+    "raw_referee_tie_breaker_clarified_before_qwen_task_outputs": "2026-08-26T06:55:01+02:00",
+    "raw_referee_tie_breaker_clarification": "The existing development Referee-validity tie-breaker is evaluated on the directly usable raw generation: raw_sbn == true and (raw_clf_referee if recorded else clf_referee) == true. The postprocessed Referee rate is retained only as a diagnostic. The metric priority, direction, remaining tie-breakers, and models are unchanged.",
+    "target_module_manifest_contract_corrected_after_qwen_outputs_before_host_selection": "2026-08-26T08:12:20+02:00",
+    "target_module_manifest_contract_correction": "Register the exact architecture-specific manifest representation of the already-frozen shared policy: legacy all-linear for LFM, structured all-linear for Granite, and all language-backbone linear modules with the unused vision tower excluded for Qwen. This corrects fail-closed evidence validation after all baseline outputs but before any host was selected; it does not change adapters, logits, outputs, metrics, ranking rules, or models.",
+    "split": "dev",
+    "required_records": 1132,
+    "require_all_models_complete": true,
+    "primary_metric": "sbn_smatch_mean",
+    "direction": "max",
+    "tie_breakers": [
+      "referee_valid_rate_total",
+      "raw_sbn_valid_rate",
+      "parameters_billions:min",
+      "priority:min"
+    ],
+    "referee_validity_surface": "raw_generation",
+    "test_metrics_used": false,
+    "purpose": "Select one frozen LoRA host for the publication-scale U/B/W/BF/WF method experiment without test-set selection."
+  },
+  "method_experiment": {
+    "frozen_before_pending_host_results": "2026-08-26T01:45:44+02:00",
+    "execution_schedule_amended_before_host_selection": "2026-08-26T05:59:37+02:00",
+    "execution_schedule_amendment": "Keep the integrity pilot and all layer/beam diagnostics development-only; generate held-out test and tax publication/intervention artifacts only after every development artifact is frozen. The method, populations, metrics, and resource ceiling are unchanged.",
+    "execution_schedule": [
+      "pilot-batch-equivalence",
+      "pilot-dev",
+      "publication-dev",
+      "layer-supplement",
+      "fine-supplement",
+      "conditioned-dev-interventions-worst-case",
+      "beam-candidates-and-online",
+      "heldout-test-publication",
+      "heldout-tax-publication",
+      "conditioned-test-interventions-worst-case",
+      "conditioned-tax-interventions-worst-case"
+    ],
+    "host_source": "runs/lora/selected-host.json",
+    "pilot": {
+      "split": "dev",
+      "selection": "first-corpus-order",
+      "records": 400,
+      "configurations": [
+        "U",
+        "BF",
+        "WF"
+      ],
+      "strategy": "greedy",
+      "max_new_tokens": 256,
+      "requirements": {
+        "u_surface_equivalent_to_frozen_baseline": true,
+        "bounded_outputs_accepting_under_policy": true,
+        "wf_semantic_wellformedness": true,
+        "all_masked_rows": 0,
+        "truncated_rows": 0,
+        "finite_unmasked_logprob_for_every_output": true,
+        "performance_threshold_used": false
+      }
+    },
+    "layer_ablation": {
+      "frozen_before_pending_host_results": "2026-08-26T02:00:41+02:00",
+      "split": "dev",
+      "selection": "same-first-corpus-order-as-pilot",
+      "records": 400,
+      "generated_configurations": [
+        "B",
+        "W"
+      ],
+      "derived_full_ladder": [
+        "U",
+        "B",
+        "W",
+        "BF",
+        "WF"
+      ],
+      "strategy": "greedy",
+      "max_new_tokens": 256,
+      "performance_threshold_used": false,
+      "note": "Generate only the missing B/W cells, then hash-preservingly merge them with the pilot U/BF/WF rows. This yields an unbiased first-400 layer ablation without regenerating existing conditions."
+    },
+    "fine_grained_ablation": {
+      "frozen_before_granite_task_results_and_qwen_start": "2026-08-26T03:21:05+02:00",
+      "split": "dev",
+      "selection": "same-first-corpus-order-as-pilot",
+      "records": 400,
+      "generated_configurations": [
+        "S",
+        "R",
+        "G"
+      ],
+      "source_ladder": [
+        "U",
+        "B",
+        "W",
+        "BF",
+        "WF"
+      ],
+      "derived_full_ladder": [
+        "U",
+        "S",
+        "R",
+        "G",
+        "B",
+        "W",
+        "BF",
+        "WF"
+      ],
+      "strategy": "greedy",
+      "max_new_tokens": 256,
+      "performance_threshold_used": false,
+      "note": "Generate only S/R/G after host selection and join them byte-for-byte with the independently gated dev400 U/B/W/BF/WF artifact. This tests grammar-only, reference-register, graph, semantic, and finite-budget contributions without regenerating existing cells. The design was frozen after Granite optimization diagnostics but before any Granite task metric was read."
+    },
+    "beam_selection_study": {
+      "frozen_after_granite_results_before_qwen_task_outputs": "2026-08-26T03:58:30+02:00",
+      "motivation_source": "Primary-source audit of Fancellu et al. (Findings EMNLP 2020), Liu (LREC-COLING 2024), Grammar-Aligned Decoding, and Draft-Conditioned Constrained Decoding",
+      "split": "dev",
+      "selection": "same-first-corpus-order-as-pilot",
+      "records": 400,
+      "num_beams": 4,
+      "max_new_tokens": 256,
+      "generated_conditions": [
+        "U4-candidates",
+        "W",
+        "WF"
+      ],
+      "derived_comparison": [
+        "U",
+        "PostW",
+        "W",
+        "WF"
+      ],
+      "u_num_return_sequences": 4,
+      "online_num_return_sequences": 1,
+      "postw_selection": "highest-sequence-score U beam candidate accepted by W; fall back to U top-1 when no W-valid candidate exists",
+      "strategy": "beam",
+      "performance_threshold_used": false,
+      "report": [
+        "W-valid candidate coverage",
+        "fallback count",
+        "Referee validity",
+        "SBN Smatch",
+        "raw model log probability",
+        "changed paths",
+        "generation and constraint time",
+        "all-masked rows"
+      ],
+      "note": "This is a matched-budget diagnostic of offline well-formed beam selection versus online dynamic-state and finite-horizon intervention. It is deliberately separate from the frozen greedy primary matrix and runs only after that matrix."
+    },
+    "conditioned_intervention": {
+      "frozen_before_pending_host_results": "2026-08-26T02:08:19+02:00",
+      "splits": [
+        "dev",
+        "test",
+        "tax"
+      ],
+      "selection_criterion": "configuration == U and (raw SBN invalid under B or semantic state invalid under W)",
+      "configurations": [
+        "U",
+        "B",
+        "W",
+        "BF",
+        "WF"
+      ],
+      "strategy": "greedy",
+      "max_new_tokens": 256,
+      "membership_conditioned_on_u_failure": true,
+      "performance_threshold_used": false,
+      "reporting_scope": "mechanism attribution and repair/regression counts only; never use conditioned validity as a population estimate"
+    },
+    "publication_matrices": [
+      {
+        "split": "dev",
+        "records": 1132,
+        "configurations": [
+          "U",
+          "BF",
+          "WF"
+        ]
+      },
+      {
+        "split": "test",
+        "records": 1132,
+        "configurations": [
+          "U",
+          "BF",
+          "WF"
+        ]
+      },
+      {
+        "split": "tax",
+        "records": 117,
+        "configurations": [
+          "U",
+          "BF",
+          "WF"
+        ]
+      }
+    ],
+    "paired_statistics": {
+      "frozen_before_pending_host_results": "2026-08-26T02:45:55+02:00",
+      "raw_wellformed_definition_frozen_before_qwen_task_outputs": "2026-08-26T04:46:15+02:00",
+      "wellformed_valid_definition": "raw_sbn == true and (raw_clf_referee if recorded else clf_referee) == true",
+      "paired_unit": "example",
+      "baseline_configuration": "U",
+      "bootstrap": "paired-percentile",
+      "bootstrap_resamples": 5000,
+      "confidence": 0.95,
+      "seed": 20260826,
+      "mcnemar": "two-sided-exact-conditional-binomial",
+      "multiplicity": "Holm within each binary metric across comparisons",
+      "primary_metrics": [
+        "wellformed_valid",
+        "sbn_smatch"
+      ],
+      "secondary_metrics": [
+        "raw_sbn_valid",
+        "sbn_valid",
+        "exact_serialization",
+        "raw_model_mean_logprob",
+        "generation_ms",
+        "constraint_ms",
+        "decoder_steps"
+      ],
+      "note": "All deltas are constrained minus U on identical IDs and decode settings. Timing intervals reflect variation across examples, not repeated-system measurement noise. Failure-conditioned intervention populations are mechanism analyses, never population estimates."
+    },
+    "note": "The pilot is an implementation-integrity gate, not a performance-selection gate. Full paired evaluation proceeds after correctness checks regardless of whether the effect is positive or negative."
+  },
+  "models": [
+    {
+      "key": "lfm25-2.6b-base",
+      "repo_id": "LiquidAI/LFM2.5-2.6B-Base",
+      "revision": "c57bdaed1ef166fe3095dda07f4a5e789ad5321e",
+      "released": "2026-08-01",
+      "parameters_billions": 2.69,
+      "safetensors_bytes": 5394427448,
+      "architecture": "Lfm2ForCausalLM",
+      "model_loader": "causal-lm",
+      "initialization": "pretrained-base",
+      "license": "lfm1.0",
+      "baseline_generation_contract": "legacy-sequential-unscored-v0",
+      "baseline_generation_split_contracts": {
+        "dev": "legacy-sequential-unscored-v0",
+        "test": "legacy-sequential-scored-v1",
+        "tax": "legacy-sequential-scored-v1"
+      },
+      "training_manifest_contract": "legacy-no-model-loader-v0",
+      "training_target_modules_manifest": "all-linear",
+      "tokenizer_audit_contract": "legacy-train-name-no-resolved-revision-v0",
+      "smoke_records": 20,
+      "smoke_max_new_tokens": 256,
+      "priority": 1
+    },
+    {
+      "key": "granite42-3b",
+      "repo_id": "ibm-granite/granite-4.2-3b",
+      "revision": "b7e947307dd2efb3ad3b853b0e8a7e75f8ad4ac2",
+      "released": "2026-08-25",
+      "parameters_billions": 3.0,
+      "safetensors_bytes": 7319517120,
+      "architecture": "GraniteForCausalLM",
+      "model_loader": "causal-lm",
+      "initialization": "reasoning-posttrained",
+      "license": "apache-2.0",
+      "baseline_generation_contract": "batch8-unscored-v1",
+      "baseline_generation_split_contracts": {
+        "dev": "batch8-unscored-v1",
+        "test": "batch8-unscored-v1",
+        "tax": "batch8-unscored-v1"
+      },
+      "training_manifest_contract": "model-loader-v1",
+      "training_target_modules_manifest": {
+        "scope": "all-linear",
+        "count": null,
+        "prefix": null
+      },
+      "tokenizer_audit_contract": "run-root-resolved-revision-v1",
+      "smoke_records": 20,
+      "smoke_max_new_tokens": 256,
+      "priority": 2
+    },
+    {
+      "key": "qwen35-4b-base",
+      "repo_id": "Qwen/Qwen3.5-4B-Base",
+      "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+      "released": "2026-02-27",
+      "parameters_billions": 4.0,
+      "checkpoint_parameters_billions": 5.0,
+      "safetensors_bytes": 9319828056,
+      "architecture": "Qwen3_5ForConditionalGeneration",
+      "model_loader": "multimodal-text-only",
+      "initialization": "pretrained-base",
+      "license": "apache-2.0",
+      "baseline_generation_contract": "batch8-unscored-v1",
+      "baseline_generation_split_contracts": {
+        "dev": "batch8-unscored-v1",
+        "test": "batch8-unscored-v1",
+        "tax": "batch8-unscored-v1"
+      },
+      "training_manifest_contract": "model-loader-v1",
+      "training_target_modules_manifest": {
+        "scope": "language-linear",
+        "count": 248,
+        "prefix": "model.language_model."
+      },
+      "tokenizer_audit_contract": "run-root-resolved-revision-v1",
+      "smoke_records": 4,
+      "smoke_max_new_tokens": 128,
+      "priority": 3,
+      "note": "The official checkpoint contains a 4B language backbone plus a vision encoder. Text-only SBN training loads the published wrapper for exact weight mapping but injects LoRA only below model.language_model."
+    }
+  ]
+}

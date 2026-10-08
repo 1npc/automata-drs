@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "kind": "wcd-drs-heldout-horizon-false-negative-audit",
+  "registered_at_utc": "2026-08-27T21:33:17Z",
+  "status": "registered-posthoc-diagnostic",
+  "research_question": "When the frozen 48-token W path differs from WF, did the constructive completion planner reject a token even though the remainder of the already observed W path is itself a deterministic-verifier-accepted certificate inside the remaining native-token budget?",
+  "registration_boundary": "The complete test128 generation, scores, gate, and the identities of the two changed rows were known before this diagnostic was registered. The audit therefore replays all 128 W rows and is descriptive failure analysis, not confirmatory evidence for a repaired method.",
+  "source": {
+    "experiment_contract": {
+      "path": "configs/wcd_drs_horizon_test128_v1.json",
+      "sha256": "a4ac1f9dd5c95d6691a64997f6b8fbfa554065ddacf41b026b3f56e8798079b3"
+    },
+    "predictions": {
+      "path": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-wf-wwcd-h48-greedy-v1.jsonl",
+      "sha256": "15523b566f92a74f5bbeaeb539fee53d6ca7af6340bdb08ea4657f44f5af2944"
+    },
+    "prediction_manifest": {
+      "path": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-wf-wwcd-h48-greedy-v1.jsonl.manifest.json",
+      "sha256": "31d4c86625d9985734c3e1e0bb31e65eb865ed7afe920e0d351210464757b06e"
+    },
+    "scores": {
+      "path": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-wf-wwcd-h48-greedy-v1.smatch.jsonl",
+      "sha256": "c57d3626dbf2c7e3f34f542afc48fece5617ce64b25c5e556093d1901b8a71e6"
+    },
+    "score_manifest": {
+      "path": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-wf-wwcd-h48-greedy-v1.smatch.jsonl.manifest.json",
+      "sha256": "624ee4be0fce60ebbf76c2e704c4863580d7ca33fa696305da0e78f59c0ff719"
+    },
+    "gate": {
+      "path": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-wf-wwcd-h48-greedy-v1-gate.json",
+      "sha256": "a17caa6f8a8f206af9812ba419d147f313e76ff8b719d888751d60c69bfc1cf7"
+    },
+    "adapter": "runs/lora/qwen35-4b-base-r16-seed42/adapter",
+    "adapter_config_sha256": "05cf7c0417eee73d23c58ac5de1f3d1eead43426670805a498a9a92de91bfd98",
+    "records": 128,
+    "configurations": ["W", "WF", "WWCD"],
+    "max_new_tokens": 48
+  },
+  "audit": {
+    "population": "all-128-W-rows-in-source-order",
+    "performance_conditioned_selection": false,
+    "replay": "Replay the exact W native-token path through the frozen WF admission rule. At every rejected token, independently replay the observed residual W suffix from its successor state through the deterministic verifier and require accepting EOS within the remaining budget before calling the event a constructive-planner false negative.",
+    "maximum_examples": 16,
+    "output": "runs/lora/qwen35-4b-base-r16-seed42/test128-w-path-certificate-audit-v1.json"
+  },
+  "resource_contract": {
+    "model_weights_loaded": false,
+    "gpu_used": false,
+    "cpu_math_threads": 1,
+    "maximum_output_bytes": 262144
+  },
+  "claim_boundary": "This post-hoc audit may establish that the frozen constructive proposer missed certificates which the unchanged deterministic verifier accepts. It cannot establish the effect, quality, or population behavior of any later repair; that requires a newly registered held-out generation protocol."
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "sbn_smatch": {
+    "repository": "https://github.com/lastdance500/neural-symbolic-parsing.git",
+    "revision": "83999badeb3ec090654cc71a87cbbfab66c8e9ed",
+    "relative_path": "evaluation/parsing_smatch/sbn/sbn_smatch.py"
+  }
+}

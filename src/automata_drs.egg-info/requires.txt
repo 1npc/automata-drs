@@ -1,0 +1,8 @@
+
+[hf]
+torch>=2.0
+transformers>=4.27
+
+[score]
+networkx>=2.8
+penman>=1.2

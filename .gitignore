@@ -1,0 +1,29 @@
+# Code-only repository: everything else (data, papers, results, environments)
+# stays local.
+/*
+!/src/
+!/scripts/
+!/tests/
+!/configs/
+!/pyproject.toml
+!/README.md
+!/.gitignore
+
+__pycache__/
+*.pyc
+.DS_Store
+
+# Cluster launchers and configs that hard-code private server paths.
+/scripts/h200_*.sh
+/scripts/snellius_*.sh
+/scripts/submit_snellius_*.sh
+/scripts/*colossus*.sh
+/scripts/guard_selected_lora_pilot.sh
+/scripts/guard_selected_lora_publication.sh
+/tests/test_colossus_*.py
+/configs/amr_transfer_experiment.json
+/configs/wcd_amr_boundary_dev32_h288_v1.json
+/configs/wcd_drs_horizon_test128_surface_v2.json
+/configs/wcd_drs_horizon_test128_v1.json
+/configs/wcd_drs_natural_dev_v1.json
+/configs/wcd_experiment_v1.json

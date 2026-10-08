@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: automata-drs
+Version: 0.1.0
+Summary: Prefix-safe automata constraints for SBN/DRS generation
+Requires-Python: >=3.10
+Provides-Extra: hf
+Requires-Dist: torch>=2.0; extra == "hf"
+Requires-Dist: transformers>=4.27; extra == "hf"
+Provides-Extra: score
+Requires-Dist: networkx>=2.8; extra == "score"
+Requires-Dist: penman>=1.2; extra == "score"

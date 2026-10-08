@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "kind": "qwen-drs-primary-effectiveness-v1",
+  "registered_at": "2026-08-27T00:13:32+02:00",
+  "registration_boundary": "Frozen after the complete development publication matrix and the 84-cell corrected constrained supplement, but before any constrained held-out test or tax publication output existed.",
+  "research_priority": "Establish the main method's held-out effectiveness and write the paper body before adding further diagnostics or ablations.",
+  "frozen_method": {
+    "host": "qwen35-4b-base",
+    "weights": "the existing rank-16 seed-42 DRS LoRA adapter",
+    "baseline": "U",
+    "primary": "WF",
+    "auxiliary_control": "BF",
+    "strategy": "greedy",
+    "max_new_tokens": 256,
+    "selection_source": "development evidence only"
+  },
+  "primary_evaluation": {
+    "test": {
+      "records": 1132,
+      "role": "main held-out result"
+    },
+    "tax": {
+      "records": 117,
+      "role": "supplementary DRS-specific lexical distribution-shift stress test"
+    },
+    "configurations": [
+      "U",
+      "BF",
+      "WF"
+    ],
+    "report": [
+      "raw structural and Referee validity",
+      "certified release coverage and refusals",
+      "official SBN Smatch with paired uncertainty",
+      "teacher-forced raw-model likelihood",
+      "generation and constraint latency",
+      "truncation and all-masked rows"
+    ],
+    "performance_threshold_used": false
+  },
+  "development_interpretation": {
+    "full_dev_w_validity_change": "98.14% to 100% for BF/WF, 21 fixes and 0 regressions",
+    "full_dev_smatch_delta": "+0.01167 with seeded paired 95% CI [0.00652, 0.01733]",
+    "conditioned_constrained_result": "B/W accepts 20/21 and BF/WF accepts 21/21; B-to-BF and W-to-WF each change one truncating path with one Smatch win and zero losses",
+    "claim_boundary": "The conditioned comparison is mechanism evidence, not a population estimate; the failed v2 U log-prob finalization remains preserved and is not a prerequisite for the main held-out matrix."
+  },
+  "deferred_until_after_primary_results": [
+    "beam U/PostW/W/WF diagnostic",
+    "additional failure-conditioned finalization",
+    "new horizon-pressure experiments",
+    "additional layer ablations",
+    "canonical KG or AST task experiments"
+  ],
+  "execution": {
+    "parallel_splits": {
+      "gpu1": "test",
+      "gpu0": "tax"
+    },
+    "one_experiment_per_gpu": true,
+    "maximum_math_threads_per_experiment": 2,
+    "reuse_complete_private_checkpoint_cache_offline": true,
+    "separate_outputs_locks_and_logs": true
+  },
+  "decision_after_results": {
+    "if_supported": "Lock the DRS main table, write the central paper result, then run only the minimum AMR U/P transfer needed for the cross-representation claim.",
+    "if_not_supported": "Diagnose the first held-out failure and revise the claim or method before running any broad ablation sweep."
+  }
+}

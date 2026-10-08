@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "kind": "post-primary-qwen-drs-horizon-stress",
+  "registered_at_utc": "2026-08-26T19:53:23Z",
+  "registration_boundary": "Created after the Qwen dev400 U/BF/WF pilot was known, before the frozen dev400 B/W supplement and full DRS suite were available locally. This is an evidence-triggered descriptive diagnostic, not a confirmatory population experiment.",
+  "model": {
+    "key": "qwen35-4b-base",
+    "repo_id": "Qwen/Qwen3.5-4B-Base",
+    "revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+    "adapter": "runs/lora/qwen35-4b-base-r16-seed42/adapter"
+  },
+  "prerequisites": {
+    "suite": "runs/lora/recent-model-and-method-results-v3.json",
+    "suite_markdown": "runs/lora/recent-model-and-method-results-v3.md",
+    "promotion_gate": "runs/lora/recent-model-and-method-results-v3.promotion.json",
+    "reason": "The audit is CPU-only and may not run until the complete frozen DRS suite has been independently promoted; it never competes with or changes a primary generation job."
+  },
+  "source": {
+    "predictions": "runs/lora/qwen35-4b-base-r16-seed42/dev400-b-w-greedy.jsonl",
+    "manifest": "runs/lora/qwen35-4b-base-r16-seed42/dev400-b-w-greedy.jsonl.manifest.json",
+    "split": "dev",
+    "selection": "same first 400 records as the frozen method pilot",
+    "records": 400,
+    "configurations": [
+      "B",
+      "W"
+    ],
+    "source_max_new_tokens": 256,
+    "require_complete_manifest": true,
+    "require_identical_id_sets": true,
+    "require_policy_valid_finished_source_rows": false,
+    "note": "Invalid, truncated, or non-EOS B/W source rows are retained and reported as source failures; they are never dropped to improve certificate coverage."
+  },
+  "audit": {
+    "counterfactual_horizons": [
+      64,
+      128,
+      192,
+      256
+    ],
+    "mapping": {
+      "B": "BF",
+      "W": "WF"
+    },
+    "path": "Replay each stored selected token plus EOS through the same exact byte-level-BPE transition and constructive completion oracle under each counterfactual hard horizon.",
+    "first_failure": "Record the first token rejected by bounded certification, whether the corresponding unbounded transition is locally live, the remaining budget, and any concrete witness distance.",
+    "max_examples_per_cell": 32,
+    "max_completion_cache_entries": 20000,
+    "performance_threshold_used": false,
+    "horizon_choice": "Fixed 64-token increments ending at the registered 256-token primary cap; every horizon is reported and none is selected after seeing B/W outputs."
+  },
+  "resource_contract": {
+    "model_weights_loaded": false,
+    "gpu_used": false,
+    "cpu_math_threads": 1,
+    "tokenizer_parallelism": false,
+    "serial_lock": "runs/lora/.qwen-drs-horizon-stress.lock",
+    "maximum_output_bytes": 8388608,
+    "temporary_scratch_required": false
+  },
+  "report": [
+    "all attempted rows including invalid/truncated source rows",
+    "path length and within-horizon coverage",
+    "accepted selected paths",
+    "first bounded rejection step",
+    "locally-live but uncertified rejections",
+    "planner false rejection on in-horizon accepting paths",
+    "source-policy and source-execution failure counts",
+    "source, manifest, tokenizer, config, and implementation hashes"
+  ],
+  "claim_boundary": "This replay audit measures where an already generated B/W path would encounter finite-horizon pressure. It does not show which alternative BF/WF generation would select, does not estimate a population quality gain, and cannot replace matched B-versus-BF or W-versus-WF generation. A later generation follow-up requires a separate immutable protocol and must retain all negative results."
+}

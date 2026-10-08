@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "automata-drs"
+version = "0.1.0"
+description = "Prefix-safe automata constraints for SBN/DRS generation"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+hf = [
+    "torch>=2.0",
+    "transformers>=4.27",
+]
+lora = [
+    "torch>=2.0",
+    "transformers>=5.0,<6",
+    "accelerate>=1.0",
+    "peft>=0.17",
+    "numpy>=1.26,<2",
+    "scipy>=1.11,<2",
+    "Pillow>=10",
+]
+score = [
+    "networkx>=2.8",
+    "penman>=1.2",
+    "smatchpp==1.8.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
