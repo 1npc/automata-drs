@@ -4,6 +4,11 @@
 graph generation. The first target is the Parallel Meaning Bank's Sequence Box
 Notation (SBN), used to represent Discourse Representation Structures (DRSs).
 
+This repository contains code only: the automaton and decoding library
+(`src/`), experiment and analysis scripts (`scripts/`), tests (`tests/`), and
+public experiment configurations (`configs/`). Corpora, model weights,
+experiment outputs, and cluster launch scripts are not included.
+
 The implementation keeps its constraint core model-independent while also
 providing a real ByT5 integration. Its immutable incremental SBN state:
 
